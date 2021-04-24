@@ -41,17 +41,20 @@ class ImportStock extends Command
      */
     private const CSV_HEADER_OFFSET = 0;
 
-
+    /**
+     * CSV column name for SKU
+     */
     private const COLUMN_SKU = "SKU";
 
-
+    /**
+     * CSV column name for branch
+     */
     private const COLUMN_BRANCH = "BRANCH";
 
-
+    /**
+     * CSV column name for stock
+     */
     private const COLUMN_STOCK = "STOCK";
-
-
-    private const INSERT_BATCH_SIZE = 20;
 
     /**
      * @var string Console command name
