@@ -12,17 +12,12 @@ class Stock
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private int $id;
-
-    /**
      * @ORM\Column(type="string", length=20)
      */
     private string $sku;
 
     /**
+     * @ORM\Id
      * @ORM\Column(type="string", length=5)
      */
     private string $branch;
@@ -32,9 +27,18 @@ class Stock
      */
     private float $stock;
 
-    public function getId(): int
+    /**
+     * Stock constructor.
+     *
+     * @param string $sku
+     * @param string $branch
+     * @param float $stock
+     */
+    public function __construct(string $sku, string $branch, float $stock)
     {
-        return $this->id;
+        $this->sku = $sku;
+        $this->branch = $branch;
+        $this->stock = $stock;
     }
 
     public function getSku(): string

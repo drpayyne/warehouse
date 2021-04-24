@@ -2,9 +2,15 @@
 
 namespace App\Command;
 
+use App\Entity\Stock;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use League\Csv\Reader;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,10 +42,39 @@ class ImportStock extends Command
      */
     private const CSV_HEADER_OFFSET = 0;
 
+
+    private const COLUMN_SKU = "SKU";
+
+
+    private const COLUMN_BRANCH = "BRANCH";
+
+
+    private const COLUMN_STOCK = "STOCK";
+
+
+    private const INSERT_BATCH_SIZE = 20;
+
     /**
      * @var string Console command name
      */
     protected static $defaultName = "stock:import";
+
+    /**
+     * @var Registry
+     */
+    private Registry $doctrine;
+
+    /**
+     * ImportStock constructor.
+     *
+     * @param ContainerInterface $container
+     */
+    public function __construct(
+        ContainerInterface $container
+    ) {
+        parent::__construct();
+        $this->doctrine = $container->get("doctrine");
+    }
 
     /**
      * Configures the command.
@@ -69,8 +104,41 @@ class ImportStock extends Command
 
         try {
             $records = Reader::createFromPath($filePath)->setHeaderOffset(self::CSV_HEADER_OFFSET)->getRecords();
-            foreach ($records as $record) {
-                $output->writeln(json_encode($record));
+            $progressBar = new ProgressBar($output);
+            $failedRows = [];
+
+            foreach ($records as $offset => $record) {
+                $stock = new Stock(
+                    $record[self::COLUMN_SKU],
+                    $record[self::COLUMN_BRANCH],
+                    (float) $record[self::COLUMN_STOCK]
+                );
+
+                try {
+                    $this->doctrine->getManager()->persist($stock);
+                    $this->doctrine->getManager()->flush();
+                } catch (UniqueConstraintViolationException $exception) {
+                    $failedRows[] = $offset;
+                    $this->doctrine->resetManager();
+                }
+
+                $progressBar->advance();
+            }
+
+            $this->doctrine->getManager()->clear();
+            $this->doctrine->getManager()->flush();
+            $progressBar->finish();
+            $count = $offset - sizeof($failedRows);
+
+            if ($count > 0) {
+                $output->writeln("\nSuccessfully imported $count rows.");
+            }
+
+            if ($count === 0) {
+                $output->writeln("\nCould not import any row as they all exist already.");
+            } else if (sizeof($failedRows) > 0) {
+                $rows = implode(", ", $failedRows);
+                $output->writeln("Could not import the following rows as they exist already: $rows.");
             }
         } catch (Exception $e) {
             $output->writeln($e->getMessage());
