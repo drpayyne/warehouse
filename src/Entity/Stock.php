@@ -30,15 +30,21 @@ class Stock
     /**
      * Stock constructor.
      *
-     * @param string $sku
-     * @param string $branch
-     * @param float $stock
+     * @param string|null $sku
+     * @param string|null $branch
+     * @param float|null $stock
      */
-    public function __construct(string $sku, string $branch, float $stock)
+    public function __construct(string $sku = null, string $branch = null, float $stock = null)
     {
-        $this->sku = $sku;
-        $this->branch = $branch;
-        $this->stock = $stock;
+        if ($sku) {
+            $this->sku = $sku;
+        }
+        if ($branch) {
+            $this->branch = $branch;
+        }
+        if ($stock) {
+            $this->stock = $stock;
+        }
     }
 
     public function getSku(): string
