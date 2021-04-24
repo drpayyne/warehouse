@@ -12,6 +12,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/stock")
+ *
+ * @author Adarsh Manickam <adarsh.apple@icloud.com>
  */
 class StockController extends AbstractController
 {

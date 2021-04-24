@@ -11,6 +11,8 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Stock|null findOneBy(array $criteria, array $orderBy = null)
  * @method Stock[]    findAll()
  * @method Stock[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @author Adarsh Manickam <adarsh.apple@icloud.com>
  */
 class StockRepository extends ServiceEntityRepository
 {
