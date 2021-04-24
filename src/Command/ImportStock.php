@@ -5,7 +5,6 @@ namespace App\Command;
 use App\Entity\Stock;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use League\Csv\Reader;
 use Psr\Container\ContainerInterface;
@@ -118,6 +117,7 @@ class ImportStock extends Command
                     $this->doctrine->getManager()->persist($stock);
                     $this->doctrine->getManager()->flush();
                 } catch (UniqueConstraintViolationException $exception) {
+                    // TODO: Update when entity is already present.
                     $failedRows[] = $offset;
                     $this->doctrine->resetManager();
                 }
