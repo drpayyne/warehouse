@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Stock;
 use App\Form\StockType;
+use App\Message\Notification;
 use App\Repository\StockRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,7 +73,11 @@ class StockController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $newStock = $stock->getStock();
             if ($newStock == 0 && $oldStock > $newStock) {
-
+                $sku = $stock->getSku();
+                $branch = $stock->getBranch();
+                $this->dispatchMessage(
+                    new Notification("Attention! The product with SKU $sku is out of stock at $branch.")
+                );
             }
             $this->getDoctrine()->getManager()->flush();
 
