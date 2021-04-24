@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use Exception;
+use League\Csv\Reader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,6 +32,11 @@ class ImportStock extends Command
     private const ARGUMENT_FILE_DESCRIPTION = "File to import";
 
     /**
+     * CSV header offset
+     */
+    private const CSV_HEADER_OFFSET = 0;
+
+    /**
      * @var string Console command name
      */
     protected static $defaultName = "stock:import";
@@ -37,7 +44,7 @@ class ImportStock extends Command
     /**
      * Configures the command.
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription(self::COMMAND_DESCRIPTION)
@@ -58,6 +65,19 @@ class ImportStock extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $filePath = $input->getArgument(self::ARGUMENT_FILE_NAME);
+
+        try {
+            $records = Reader::createFromPath($filePath)->setHeaderOffset(self::CSV_HEADER_OFFSET)->getRecords();
+            foreach ($records as $record) {
+                $output->writeln(json_encode($record));
+            }
+        } catch (Exception $e) {
+            $output->writeln($e->getMessage());
+
+            return Command::FAILURE;
+        }
+
         return Command::SUCCESS;
     }
 }
