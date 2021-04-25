@@ -3,28 +3,28 @@
 {% block title %}Stock{% endblock %}
 
 {% block body %}
-    <h1>Stock</h1>
+    <h1 class="text-5xl text-center">Stock</h1>
 
-    <table class="table">
-        <tbody>
+    <table class="table ml-4 mb-2">
+        <tbody class="divide-y divide-yellow-500">
             <tr>
-                <th>Sku</th>
+                <th class="text-left py-4">SKU</th>
                 <td>{{ stock.sku }}</td>
             </tr>
             <tr>
-                <th>Branch</th>
+                <th class="text-left p-4 pl-0">Branch</th>
                 <td>{{ stock.branch }}</td>
             </tr>
             <tr>
-                <th>Stock</th>
+                <th class="text-left p-4 pl-0">Stock</th>
                 <td>{{ stock.stock }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('stock_index') }}">back to list</a>
+    <a class="ml-4 p-2 rounded-lg hover:bg-yellow-500 border border-yellow-500 transition" href="{{ path('stock_index') }}">Back To Warehouse</a>
 
-    <a href="{{ path('stock_edit', {'sku': stock.sku}) }}">edit</a>
+    <a class="rounded-lg p-2 bg-yellow-500 hover:bg-yellow-600 hover:text-white border border-yellow-500 transition" href="{{ path('stock_edit', {'sku': stock.sku}) }}">Edit</a>
 
     {{ include('stock/_delete_form.html.twig') }}
 {% endblock %}
