@@ -3,35 +3,35 @@
 {% block title %}Stock index{% endblock %}
 
 {% block body %}
-    <h1>Stock index</h1>
+    <h1 class="text-5xl text-center">Warehouse</h1>
 
-    <table class="table">
-        <thead>
+    <table class="table table-fixed mx-auto my-8 border-collapse">
+        <thead class="border-b border-yellow-500">
             <tr>
-                <th>Sku</th>
-                <th>Branch</th>
-                <th>Stock</th>
-                <th>actions</th>
+                <th class="w-1/4 p-4">SKU</th>
+                <th class="w-1/4 p-4">Branch</th>
+                <th class="w-1/4 p-4">Stock</th>
+                <th class="w-1/4 p-4">Actions</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-yellow-500">
         {% for stock in stocks %}
             <tr>
-                <td>{{ stock.sku }}</td>
-                <td>{{ stock.branch }}</td>
-                <td>{{ stock.stock }}</td>
-                <td>
-                    <a href="{{ path('stock_show', {'sku': stock.sku}) }}">show</a>
-                    <a href="{{ path('stock_edit', {'sku': stock.sku}) }}">edit</a>
+                <td class="p-4 text-center">{{ stock.sku }}</td>
+                <td class="p-4 text-center">{{ stock.branch }}</td>
+                <td class="p-4 text-center">{{ stock.stock }}</td>
+                <td class="flex space-x-4 p-4 text-center">
+                    <a class="rounded-lg px-4 bg-yellow-500 hover:bg-yellow-600 hover:text-white border border-yellow-500 transition" href="{{ path('stock_show', {'sku': stock.sku}) }}">View</a>
+                    <a class="rounded-lg px-4 bg-yellow-500 hover:bg-yellow-600 hover:text-white border border-yellow-500 transition" href="{{ path('stock_edit', {'sku': stock.sku}) }}">Edit</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="4" class="p-4 text-center bg-red-300">Your warehouse is empty!</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('stock_new') }}">Create new</a>
+    <a class="absolute top-4 right-4 bg-yellow-500 p-2 rounded-lg hover:bg-yellow-600 hover:text-white border border-yellow-500 transition" href="{{ path('stock_new') }}">Add Stock</a>
 {% endblock %}
